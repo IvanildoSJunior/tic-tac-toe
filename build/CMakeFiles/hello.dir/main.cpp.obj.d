@@ -114,4 +114,5 @@ CMakeFiles/hello.dir/main.cpp.obj: \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\stl_heap.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\stl_tempbuf.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\uniform_int_dist.h \
- c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\limits
+ c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\limits \
+ C:\Users\Ivanildo\Documents\projetos\jogodavelha02\board.hpp

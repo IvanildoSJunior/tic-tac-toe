@@ -6,13 +6,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-
-
+#include "board.hpp"
 
 // global constants
-const char X = 'X';
-const char O = 'O';
-const char EMPTY = ' ';
 const char TIE = 'T';
 const char NO_ONE = 'N';
 
