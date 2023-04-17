@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/Ivanildo/Documents/projetos/jogodavelha02/build",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\hello.dir\\main.cpp.obj -c C:\\Users\\Ivanildo\\Documents\\projetos\\jogodavelha02\\main.cpp",
+  "file": "C:/Users/Ivanildo/Documents/projetos/jogodavelha02/main.cpp",
+  "output": "CMakeFiles/hello.dir/main.cpp.obj"
+}
+]
