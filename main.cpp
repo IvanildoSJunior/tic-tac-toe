@@ -7,6 +7,12 @@
 #include <vector>
 #include <algorithm>
 #include "board.hpp"
+#include <utility>
+#include "player.hpp"
+#include <memory>
+#include "humanPlayer.hpp"
+#include "machinePlayer.hpp"
+#include "game.hpp"
 
 // global constants
 const char TIE = 'T';
@@ -16,7 +22,7 @@ const char NO_ONE = 'N';
 void instructions();
 char askYesNo(std::string question);
 int askNumber(std::string question, int high, int low = 0);
-char humanPiece();
+std::pair<std::unique_ptr<Player>,std::unique_ptr<Player>> humanPiece();
 char opponent(char piece);
 void displayBoard(const std::vector<char>* const pBoard);
 char winner(const std::vector<char>* const pBoard);
@@ -28,17 +34,15 @@ void announceWinner(char winner, char computer, char human);
 //main function
 int main()
 {
+    Board board(dimension);
     int move;
-    const int NUM_SQUARES = 9;
-    std::vector<char> board(NUM_SQUARES, EMPTY);
 
     instructions();
-    char human = humanPiece();
-    char computer = opponent(human);
-    char turn = X;
-    displayBoard(&board);
+    std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>> players = humanPiece();
+    Game game(board, players.first, players.second);
+    board.display();
 
-    while (winner(&board) == NO_ONE)
+    while (board.winner() == NO_ONE)
     {
         if (turn == human)
         {
@@ -50,10 +54,10 @@ int main()
             move = computerMove(board, computer);
             board[move] = computer;
         }
-        displayBoard(&board);
+        board.display();
         turn = opponent(turn);
     }
-    announceWinner(winner(&board), computer, human);
+    announceWinner(board.winner(), computer, human);
 
     return 0;
 }
@@ -101,18 +105,18 @@ int askNumber(std::string question, int high, int low)
     return number;
 }
 
-char humanPiece()
+std::pair<std::unique_ptr<Player>, std::unique_ptr<Player> > humanPiece()
 {
     char go_first = askYesNo("Do you require the fist move?");
     if (go_first == 'y')
     {
         std::cout << "\nThen take the first move. You will need it. \n";
-        return X;
+        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(Human(), Machine());
     }
     else
     {
         std::cout << "\nYour bravery will be your undoing... I will go first.\n";
-        return O;
+        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(Machine(), Human());
     }
 }
 
@@ -200,7 +204,7 @@ int computerMove(std::vector<char> board, char computer)
             //try move
             board[move] = computer;
             //test for winner
-            found = winner(&board) == computer;
+            found = board.winner() == computer;
             //undo move
             board[move] = EMPTY;
         }
@@ -224,7 +228,7 @@ int computerMove(std::vector<char> board, char computer)
                 //try move
                 board[move] = human;
                 //test for winner
-                found = winner(&board) == human;
+                found = board.winner == human;
                 //undo move
                 board[move] = EMPTY;
             }
