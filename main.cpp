@@ -35,29 +35,17 @@ void announceWinner(char winner, char computer, char human);
 int main()
 {
     Board board(dimension);
-    int move;
-
     instructions();
     std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>> players = humanPiece();
-    Game game(board, players.first, players.second);
-    board.display();
+    Game game(board, std::move(players.first), std::move(players.second));
+    game.displayBoard();
 
-    while (board.winner() == NO_ONE)
+    while (!game.isEnd())
     {
-        if (turn == human)
-        {
-            move = humanMove(&board);
-            board[move] = human;
-        }
-        else
-        {
-            move = computerMove(board, computer);
-            board[move] = computer;
-        }
-        board.display();
-        turn = opponent(turn);
+        game.playTurn();
+        game.displayBoard();
     }
-    announceWinner(board.winner(), computer, human);
+    game.announceWinner();
 
     return 0;
 }
@@ -111,7 +99,8 @@ std::pair<std::unique_ptr<Player>, std::unique_ptr<Player> > humanPiece()
     if (go_first == 'y')
     {
         std::cout << "\nThen take the first move. You will need it. \n";
-        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(Human(), Machine());
+        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(Human
+        (), Machine());
     }
     else
     {
@@ -262,25 +251,4 @@ int computerMove(std::vector<char> board, char computer)
     return move;
 }
 
-void announceWinner(char winner, char computer, char human)
-{
-    if (winner == computer)
-    {
-        std::cout << winner << "'s won!\n";
-        std::cout << "As I predicted, human, I am triumphant once more -- proof\n";
-        std::cout << "that computers are superior to humans in all regards.\n";
-    }
-    else if (winner == human)
-    {
-        std::cout << winner << "'s won!\n";
-        std::cout << "No, no! It cannot be!  Somehow you tricked me, human.\n";
-        std::cout << "But never again! I, the computer, so swear it!\n";
-    }
-    else
-    {
-        std::cout << "It's a tie.\n";
-        std::cout << "You were most lucky, human, and somehow managed to tie me.\n";
-        std::cout << "Celebrate... for this is the best you will ever achieve.\n";
-    }
-}
 
