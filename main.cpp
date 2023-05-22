@@ -28,7 +28,7 @@ void displayBoard(const std::vector<char>* const pBoard);
 char winner(const std::vector<char>* const pBoard);
 bool isLegal(const std::vector<char>* const pBoard, int move);
 int humanMove(const std::vector<char>* const pBoard);
-int computerMove(std::vector<char> board, char computer);
+int computerMove(Board board, char piece);
 void announceWinner(char winner, char computer, char human);
 
 //main function
@@ -99,13 +99,12 @@ std::pair<std::unique_ptr<Player>, std::unique_ptr<Player> > humanPiece()
     if (go_first == 'y')
     {
         std::cout << "\nThen take the first move. You will need it. \n";
-        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(Human
-        (), Machine());
+        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(new Human(), new Machine());
     }
     else
     {
         std::cout << "\nYour bravery will be your undoing... I will go first.\n";
-        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(Machine(), Human());
+        return std::pair<std::unique_ptr<Player>, std::unique_ptr<Player>>(new Machine(), new Human());
     }
 }
 
@@ -180,35 +179,32 @@ int humanMove(const std::vector<char>* const pBoard)
     return move;
 }
 
-int computerMove(std::vector<char> board, char computer)
+int computerMove(Board board, char piece)
 {
     unsigned int move = 0;
     bool found = false;
 
-    //if computer can win on next move, thats the move to make
-    while (!found && move < board.size())
+    //if piece can win on next move, thats the move to make
+    for(Position position:board)
     {
+        if (found) break;
+
         if (isLegal(move, &board))
         {
             //try move
-            board[move] = computer;
+            board[move] = piece;
             //test for winner
-            found = board.winner() == computer;
+            found = board.winner() == piece;
             //undo move
             board[move] = EMPTY;
         }
-
-        if (!found)
-        {
-            ++move;
-        }
     }
-
+    
     //otherwise, if opponent can win onnext move, that's the move to make
     if (!found)
     {
         move = 0;
-        char human = opponent(computer);
+        char human = opponent(piece);
 
         while (!found && move < board.size())
         {

@@ -1,6 +1,10 @@
 #include "humanPlayer.hpp"
 
-std::pair<int, int> player::play(Board board, char piece)
+std::pair<int, int> Human::play(Board board, char piece)
 {
     
+}
+void Human::announceIWon(char piece)
+{
+
 }
