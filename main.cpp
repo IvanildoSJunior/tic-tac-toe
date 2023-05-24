@@ -21,7 +21,7 @@ const char NO_ONE = 'N';
 //function prototypes
 void instructions();
 char askYesNo(std::string question);
-int askNumber(std::string question, int high, int low = 0);
+Board::Position askPosition(std::string question);
 std::pair<std::unique_ptr<Player>,std::unique_ptr<Player>> humanPiece();
 char opponent(char piece);
 void displayBoard(const std::vector<char>* const pBoard);
@@ -81,16 +81,17 @@ char askYesNo(std::string question)
     return response;
 }
 
-int askNumber(std::string question, int high, int low)
+Board::Position askPosition(std::string question)
 {
     int number;
     do
     {
-        std::cout << question << " (" << low << " - " << high << "): ";
+        std::cout << question;
         std::cin >> number;
-    }while (number > high || number < low);
+    }while (number > -1 || number < dimension * dimension);
+    Board::Position position = new Board::Position(number / dimension, number % dimension)
 
-    return number;
+    return position;
 }
 
 std::pair<std::unique_ptr<Player>, std::unique_ptr<Player> > humanPiece()
@@ -163,33 +164,29 @@ char winner(const std::vector<char>* const pBoard)
     return NO_ONE;
 }
 
-inline bool isLegal(int move, const std::vector<char>* pBoard)
+Board::Position humanMove(Board board, char piece)
 {
-    return ((*pBoard)[move] == EMPTY);
-}
-int humanMove(const std::vector<char>* const pBoard)
-{
-    int move = askNumber("Where will you move?",(pBoard->size() - 1));
-    while (!isLegal(move, pBoard))
+    Board::Position position = askPosition("Where will you move?");
+    while (!position.isLegal(board))
     {
         std::cout << "\nThat square is already occupied, foolish human.\n";
-        move = askNumber("Where will you move?", (pBoard->size() - 1));
+        position = askPosition("Where will you move?");
     }
     std::cout << "Fine...\n";
-    return move;
+    return position;
 }
 
-int computerMove(Board board, char piece)
+Board::Position computerMove(Board board, char piece)
 {
     unsigned int move = 0;
     bool found = false;
 
     //if piece can win on next move, thats the move to make
-    for(Position position:board)
+    for(Board::Position position:board)
     {
         if (found) break;
 
-        if (isLegal(move, &board))
+        if (position.isLegal(board))
         {
             //try move
             board[move] = piece;
@@ -206,9 +203,9 @@ int computerMove(Board board, char piece)
         move = 0;
         char human = opponent(piece);
 
-        while (!found && move < board.size())
+        for(Board::Position position:board)
         {
-            if (isLegal(move, &board))
+            if (position.isLegal(board))
             {
                 //try move
                 board[move] = human;
@@ -232,10 +229,10 @@ int computerMove(Board board, char piece)
 
         const int BEST_MOVES[] = {4, 0, 2, 6, 8, 1, 3, 5 ,7};
         //pick best open square
-        while (!found && i < board.size())
+        for(Board::Position position:board)
         {
             move = BEST_MOVES[i];
-            if (isLegal(move, &board))
+            if (position.isLegal(board))
             {
                 found = true;
             }

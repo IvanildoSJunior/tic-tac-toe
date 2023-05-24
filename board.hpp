@@ -13,27 +13,32 @@ class Board
         std::vector<char> board;
     
     public:
+        class Position
+    {
+        public:
+            int x;
+            int y;
+            bool isLegal(Board board);
+            
+    };
+
+        class Iterator
+        {
+            public:
+            Position operator*();
+            Iterator operator++();
+            Iterator operator++(int);
+            bool operator!=(Iterator other);
+        };
+
         Board(int dimension): board(dimension * dimension,EMPTY){}
         void display();
         char winner();
-        Board::Iterator begin();
-        Board::Iterator end(); 
+        Iterator begin();
+        Iterator end(); 
     
 
-    class Position
-    {
-        int x;
-        int y;
-    };
-
-    class Iterator
-    {
-        Position operator*();
-        Iterator operator++();
-        Iterator operator++(int);
-    };
-
-
+    
 
 };
 #endif
